@@ -1,0 +1,38 @@
+[info]
+name 		="super kyo"
+displayname ="super kyo"
+author		="筱枫"
+versiondate=2016/11/13
+mugenversion=
+pal.defaults=1,2,3,4,5
+
+[files]
+cmd		=cmd/kyo.cmd
+cns		=cns/kyo.cns
+st		=cns/kyo-N.cns
+stcommon =cns/common_kyo.cns
+sprite	=kyo.sff
+anim	=kyo.air
+sound	=kyo.snd
+
+
+pal1=act/act02.act
+pal2=act/act04.act
+pal3=act/act06.act
+pal4=act/act01.act
+pal5=act/act03.act
+pal6=act/act05.act
+pal7=act/act02.act
+pal8=act/act04.act
+pal9=act/act06.act
+pal10=act/act01.act
+pal11=act/act03.act
+pal12=act/act05.act
+st1=cns/kyo-H.cns
+st2=cns/kyo-S.cns
+st3=cns/ai-3.cns
+st4=cns/kyo-2.cns
+st5=cns/helper.cns
+[Arcade]
+intro.storyboard=
+ending.storyboard=

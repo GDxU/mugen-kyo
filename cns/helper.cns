@@ -1,0 +1,808 @@
+; ==============================================================================
+; helper stateno 198 为特殊helper，用于火
+; helper stateno 9000 - 10000  为帮助helper
+; helper stateno 8000 - 9000   为判定增加helper
+; helper stateno 7000 - 8000   为特效helper
+
+; ==============================================================================
+; helper 炎
+[statedef 198]
+type = A
+movetype = I
+physics = N
+anim = 198
+velset = 0, 0
+sprpriority = 10
+
+; 设置临时变量, var(1)存储root,stateno
+[state 198, varset]
+type = varset
+trigger1 = 1
+var(1) = root,stateno
+
+[state 198, varset]
+type = varset
+trigger1 = root,stateno = 750
+trigger2 = root,stateno = 751
+trigger3 = root,stateno = 752
+var(1) = 750
+
+[state 198, varset]
+type = varset
+trigger1 = root,stateno = 3000
+trigger2 = root,stateno = 3010
+trigger3 = root,stateno = 3050
+var(1) = 3000
+
+[state 198, varset]
+type = varset
+trigger1 = root,stateno = 3005
+trigger2 = root,stateno = 3055
+var(1) = 3005
+
+[state 198, varset]
+type = varset
+trigger1 = root,stateno = 3200
+trigger2 = root,stateno = 3250
+var(1) = 3200
+
+; stateno = 181
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 181
+time = -1
+facing = 1
+pos = 21, -96
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 3
+trigger1 = var(1) = 181
+time = -1
+facing = 1
+pos = 11, -98
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 4
+trigger1 = var(1) = 181
+time = -1
+facing = 1
+pos = 7, -98
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 5
+trigger1 = var(1) = 181
+time = -1
+facing = 1
+pos = 3, -99
+
+; stateno = 184 && stateno = 192
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 184
+time = -1
+facing = 1
+pos = 44, -70
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 4 && var(1) = 184
+trigger2 = root,animelem = 3 && var(1) = 192
+time = -1
+facing = 1
+pos = 44, -90
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 5 && var(1) = 184
+trigger2 = root,animelem = 4 && var(1) = 192
+time = -1
+facing = 1
+pos = 35, -102
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 6 && var(1) = 184
+trigger2 = root,animelem = 5 && var(1) = 192
+time = -1
+facing = 1
+pos = 46, -85
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 7 && var(1) = 184
+trigger2 = root,animelem = 6 && var(1) = 192
+time = -1
+facing = 1
+pos = 36, -42
+
+; stateno = 191
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 191
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 4 && var(1) = 191
+time = -1
+facing = 1
+pos = 24, -116
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 5 && var(1) = 191
+time = -1
+facing = 1
+pos = 20, -120
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 6 && var(1) = 191
+time = -1
+facing = 1
+pos = 4, -60
+
+; stateno = 750
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 750
+time = -1
+facing = 1
+pos = 40, -96
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 2 && var(1) = 750
+time = -1
+facing = 1
+pos = 24, -116
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 3 && var(1) = 750
+time = -1
+facing = 1
+pos = 20, -120
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 4 && var(1) = 750
+time = -1
+facing = 1
+pos = 4, -60
+
+; stateno = 3000
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 3000
+time = -1
+facing = 1
+pos = 40, -96
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 3 && var(1) = 3000
+time = -1
+facing = 1
+pos = 26,-112
+
+; stateno = 3005
+[state 198, changeanim]
+type = changeanim
+trigger1 = root,stateno = 3005 || root,stateno = 3055
+trigger1 = root,animelem = 1
+value = 199
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 1 && var(1) = 3005
+time = -1
+facing = 1
+pos = 6,-60
+
+[State 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 7 && var(1) = 3005
+time = -1
+facing = 1
+pos = -35,-106
+
+[State 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 8 && var(1) = 3005
+time = -1
+facing = 1
+pos = -26,-110
+
+; stateno = 3200
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = time = 0
+trigger1 = var(1) = 3200
+time = -1
+facing = 1
+pos = 20, -120
+
+[state 198, bindtoroot]
+type = bindtoroot
+trigger1 = root,animelem = 2 && var(1) = 3200
+time = -1
+facing = 1
+pos = 4, -60
+
+; 熄灭动画
+[state 198, changeanim]
+type = changeanim
+trigger1 = root,animelem = 5
+trigger1 = var(1) = 181
+trigger2 = root,animelem = 7 && var(1) = 184
+trigger3 = root,animelem = 6 && var(1) = 192
+trigger4 = root,animelem = 6 && var(1) = 191
+trigger5 = root,animelem = 4 && var(1) = 750
+trigger6 = root,animelem = 2 && var(1) = 3200
+trigger7 = root,animelemtime(9) = 8 && root,stateno = 3005
+trigger8 = root,animelem = 12 && root,stateno = 3055
+value = 199
+
+[state 198, destroyself]
+type = destroyself
+trigger1 = anim = 199 && animtime = 0
+trigger2 = root,movetype = H
+
+; ==============================================================================
+; 各类helper
+; 闪光
+[statedef 7000]
+type = A
+movetype = I
+physics = N
+anim = 9999
+
+[state 7000, assertspecial]
+type = assertspecial
+trigger1 = 1
+flag = nofg
+flag2 = nobg
+flag3 = globalnoshadow
+
+[state 7000, playsnd]
+type = playsnd
+trigger1 = time = 0
+value = s9, 0
+
+[state 7000, explod]
+type = explod
+trigger1 = time = 0
+anim = 7000
+pos = 0, 0
+sprpriority = -3
+ownpal = 1
+bindtime = 1
+supermove = 1
+
+[state 7000, explod]
+type = explod
+trigger1 = time = 0
+anim = 7001
+pos = 0, 0
+sprpriority = 10
+ownpal = 1
+bindtime = 1
+supermove = 1
+
+[state 7000, destroyself]
+type = destroyself
+trigger1 = animtime = 0
+
+
+
+
+; ==============================================================================
+; 脱离用状态号
+[statedef 8000]
+type = S
+physics = N
+anim = 5050
+
+[state 8000, nothitby]
+type = nothitby
+trigger1 = time = 0
+value = SCA, AA, AT, AP
+time = 60
+
+[state 8000, changestate]
+type = changestate
+trigger1 = time = 0
+value = 5050
+
+; ==============================================================================
+; 用于永续target-hitdef
+[statedef 8001]
+type = S
+physics = N
+movetype = A
+anim = 4120
+
+[state 8001, attackdist]
+type = attackdist
+trigger1 = 1
+value = 0
+
+[state 8001, bindtoroot]
+type = bindtoroot
+trigger1 = !numtarget
+pos = 0, 0
+
+[state 8001, bindtoroot]
+type = bindtoroot
+trigger1 = numtarget
+pos = 999999, 999999
+
+[state 8001, reversaldef]
+type = reversaldef
+trigger1 = numtarget
+reversal.attr = SCA, AA, AT, AP
+
+[state 8001, hitdef]
+type = hitdef
+trigger1 = !numtarget
+attr = SCA, NA
+hitflag = MAFD
+guardflag = MA
+sparkxy = 99999, 99999
+p2stateno = 8004
+
+[state 8001, targetstate]
+type = targetstate
+triggerall = numtarget
+trigger1 = numhelper(4110)
+trigger1 = !helper(4110),movehit
+trigger1 = abs(helper(4110),pos X - target,pos X) < 25
+trigger1 = root,var(50) & 1
+trigger2 = root,stateno = 4105
+trigger2 = target,movetype != H
+value = 8003
+
+[state 8001, targetlifeadd]
+type = targetlifeadd
+trigger1 = numtarget
+trigger1 = numhelper(4110)
+trigger1 = !helper(4110),movehit
+trigger1 = abs(helper(4110),pos X - target,pos X) < 25
+trigger1 = root,var(50) & 1
+trigger1 = root,stateno = 4105
+trigger1 = root,time = 0
+value = floor(10 * root,fvar(1))
+
+; ==============================================================================
+; 用于永续target-reversaldef
+[statedef 8002]
+type = S
+physics = N
+anim = 4120
+
+[state 8002, bindtoroot]
+type = bindtoroot
+trigger1 = !numtarget
+pos = 0, 0
+
+[state 8002, bindtoroot]
+type = bindtoroot
+trigger1 = numtarget
+pos = 999999, 999999
+
+[state 8002, reversaldef]
+type = reversaldef
+trigger1 = 1
+reversal.attr = SCA, AA, AT, AP
+sparkxy = 99999, 99999
+
+[state 8002, targetstate]
+type = targetstate
+triggerall = numtarget
+trigger1 = numhelper(4110)
+trigger1 = !helper(4110),movehit
+trigger1 = abs(helper(4110),pos X - target,pos X) < 25
+trigger1 = root,var(50) & 1
+trigger2 = root,stateno = 4105
+trigger2 = target,movetype != H
+value = 8003
+
+[state 8002, targetlifeadd]
+type = targetlifeadd
+trigger1 = numtarget
+trigger1 = numhelper(4110)
+trigger1 = !helper(4110),movehit
+trigger1 = abs(helper(4110),pos X - target,pos X) < 25
+trigger1 = root,var(50) & 1
+trigger1 = root,stateno = 4105
+trigger1 = root,time = 0
+value = floor(10 * root,fvar(1))
+
+; ==============================================================================
+; 用于永续target-p2stateno-实际应用
+[statedef 8003]
+type = S
+physics = N
+
+[state 8003, hitby]
+type = hitby
+trigger1 = time < 60
+value = SCA, AA, AT, AP
+
+[state 8003, selfstate]
+type = selfstate
+trigger1 = time >= 60
+value = 0
+
+; ==============================================================================
+; 用于永续target-p2stateno-hitdef
+[statedef 8004]
+type = S
+physics = N
+
+[state 8004, selfstate]
+type = selfstate
+trigger1 = time = 0
+value = 0
+ctrl = 1
+
+
+
+; ==============================================================================
+; 防御helper
+; var(1)、var(2)  用作减伤
+; var(3)          用作记录被p2stateno攻击前最后一个stateno,用作防御时脱离使用
+; var(4)、var(5)、var(6)、var(7)   用作防御被破记录
+; var(8)		  标志，用作使用本体传来的数据后对本体数据清零的一个操作
+[statedef 9000]
+type = S
+physics = N
+movetype = I
+anim = 9998
+
+[state 9000, assertspecial]
+type = assertspecial
+trigger1 = 1
+flag = noshadow
+flag2 = invisible
+
+; ===========================================================
+; 这段代码的作用是获取两帧之间的损血量，用作防御减伤
+; 其实用gethitvar(damage)减伤更加容易，但是会直接免疫lifeadd...所以...
+[state 9000, 初始化]
+type = varset
+trigger1 = time = 0
+var(1) = root,const(data.life)
+
+[state 9000, 初始化]
+type = varset
+trigger1 = time = 0
+var(2) = root,const(data.life)
+
+[state 9000, varset]
+type = varset
+trigger1 = gametime % 2 = 0
+var(1) = root,life
+
+[state 9000, varset]
+type = varset
+trigger1 = gametime % 2 = 1
+var(2) = root,life
+
+; ================结束========================================
+
+[state 9000, bindtoroot]
+type = bindtoroot
+trigger1 = 1
+time = -1
+pos = 0, 0
+
+; ===========================================================
+; ===========防御的时候一些相关操作==========================
+
+[state 9000, varset] 	; 用作记录被p2stateno攻击前最后一个stateno,用作防御时脱离使用
+type = varset
+trigger1 = gametime % 1000 = root,var(4)
+var(3) = root,stateno
+
+[state 9000, varset]	; 站防被破记忆
+type = varset
+trigger1 = root,movetype = H || root,var(50) & 4
+trigger1 = enemy,movehit
+trigger1 = root,prevstateno = 130 || root,prevstateno = 150 || root,prevstateno = 151 || root,var(8) = 130 || root,var(8) = 150 || root,var(8) = 151
+trigger1 = var(4) = 0
+var(4) = var(8) := p2stateno
+
+[state 9000, varset]	; 站防被破记忆
+type = varset
+trigger1 = root,movetype = H || root,var(50) & 4
+trigger1 = enemy,movehit
+trigger1 = root,prevstateno = 130 || root,prevstateno = 150 || root,prevstateno = 151 || root,var(8) = 130 || root,var(8) = 150 || root,var(8) = 151
+trigger1 = var(4) != p2stateno
+trigger1 = var(5) = 0
+var(5) = var(8) := p2stateno
+
+[state 9000, varset]	; 蹲防被破记忆
+type = varset
+trigger1 = root,movetype = H || root,var(50) & 4
+trigger1 = enemy,movehit
+trigger1 = root,prevstateno = 131 || root,prevstateno = 152 || root,prevstateno = 153 || root,var(8) = 131 || root,var(8) = 152 || root,var(8) = 153
+trigger1 = var(6) = 0
+var(6) = var(8) := p2stateno
+
+[state 9000, varset]	; 蹲防被破记忆
+type = varset
+trigger1 = root,movetype = H || root,var(50) & 4
+trigger1 = enemy,movehit
+trigger1 = root,prevstateno = 131 || root,prevstateno = 152 || root,prevstateno = 153 || root,var(8) = 131 || root,var(8) = 152 || root,var(8) = 153
+trigger1 = var(6) != p2stateno
+trigger1 = var(7) = 0
+var(7) = var(8) := p2stateno
+
+[state 9000, parentvarset]
+type = parentvarset
+trigger1 = var(8)
+var(8) = var(8) := 0	; 这行其实相当于  parent,var(8) = var(8) := 0		其中var(8) 是上面用作记录的标志位
+
+; =========================== 结束 ==========================
+; ===========================================================
+
+; ==============================================================================
+; 攻击helper
+[statedef 9001]
+type = S
+physics = N
+movetype = I
+anim = 9999
+
+[state 9001, bindtoroot]
+type = bindtoroot
+trigger1 = 1
+time = -1
+pos = 0, 0
+
+; 记录对最近之敌造成的伤害，用作回血
+[state 9001, varset]
+type = varset
+trigger1 = enemynear(root,var(58)),movetype != H
+var(1) = enemynear(root,var(58)),life
+
+[state 9001, varset]
+type = varset
+trigger1 = enemynear(root,var(58)),movetype = H
+trigger1 = root,movehit
+var(2) = enemynear(root,var(58)),life - var(1)
+
+[state 9001, varset]
+type = varset
+trigger1 = root,var(9)
+trigger1 = var(2)
+var(2) = 0
+
+; 记录被当身前的动画元素号
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 1
+var(3) = 1
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 2
+var(3) = 2
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 3
+var(3) = 3
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 4
+var(3) = 4
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 5
+var(3) = 5
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 6
+var(3) = 6
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 7
+var(3) = 7
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 8
+var(3) = 8
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 9
+var(3) = 9
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 10
+var(3) = 10
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 11
+var(3) = 11
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 12
+var(3) = 12
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 13
+var(3) = 13
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 14
+var(3) = 14
+
+[state 9001, varset]
+type = varset
+trigger1 = root,animelem = 15
+var(3) = 15
+
+; 计算去除时间
+[state 9001, varset]
+type = varset
+trigger1 = (parent,vel X + enemynear(parent,var(58)),vel X) != 0
+var(4) = floor(parent,p2bodydist X / (parent,vel X + enemynear(parent,var(58)),vel X))
+
+[state 9001, varset]
+type = varset
+trigger1 = (parent,vel Y + enemynear(parent,var(58)),vel Y) != 0
+var(5) = floor(parent,p2bodydist Y / (parent,vel Y + enemynear(parent,var(58)),vel Y))
+
+; ==============================================================================
+; 爆气条之类的helper
+; var(2)、var(3)、var(4)  	用作计算进度条量
+; var(5)   					用作随机爆bc
+[statedef 9002]
+type = S
+physics = N
+movetype = I
+anim = 9999
+
+[state 9002, random-爆气]
+type = varset
+trigger1 = root,stateno = 161
+trigger1 = root,time = 1
+var(5) = random % 3 + 1
+
+[state 9002, bindtoroot]
+type = bindtoroot
+trigger1 = 1
+time = -1
+pos = 0, 0
+
+[state 9002, BC]
+type = explod
+trigger1 = !numexplod(9002)
+trigger1 = root,stateno = 750 || root,stateno = 755; 这里写爆BC的stateno
+trigger1 = var(2) := 1000
+trigger2 = var(5) = 1
+trigger2 = var(2) := 1000
+id = 9002
+anim = 7512
+pos = 20, 230
+postype = back
+bindtime = -1
+ontop = 1
+
+[state 9002, ABC]
+type = explod
+trigger1 = !numexplod(9003)
+trigger1 = root,stateno = 751 ; 这里写爆ABC的stateno
+trigger1 = var(3) := 1000
+trigger2 = var(5) = 2
+trigger2 = var(3) := 1000
+id = 9003
+anim = 7515
+pos = 20, 220
+postype = back
+bindtime = -1
+ontop = 1
+
+[state 9002, BCD]
+type = explod
+trigger1 = !numexplod(9004)
+trigger1 = root,stateno = 752 ; 这里写爆BCD的stateno
+trigger1 = var(4) := 1000
+trigger2 = var(5) = 3
+trigger2 = var(4) := 1000
+id = 9004
+anim = 7511
+pos = 20, 210
+postype = back
+bindtime = -1
+ontop = 1
+
+[state 9002, mod_BC]
+type = modifyexplod
+trigger1 = numexplod(9002)
+trigger1 = var(2) > 0
+id = 9002
+anim = 7512
+pos = 20, 230
+postype = back
+bindtime = -1
+ontop = 1
+scale = var(2) / 3000.0, 0.5
+
+[state 9002, mod_ABC]
+type = modifyexplod
+trigger1 = numexplod(9003)
+trigger1 = var(3) > 0
+id = 9003
+anim = 7515
+pos = 20, 220
+postype = back
+bindtime = -1
+ontop = 1
+ownpal = 1
+scale = var(3) / 3000.0, 0.5
+
+[state 9002, mod_BCD]
+type = modifyexplod
+trigger1 = numexplod(9004)
+trigger1 = var(4) > 0
+id = 9004
+anim = 7511
+pos = 20, 210
+postype = back
+bindtime = -1
+ownpal = 1
+scale = var(4) / 3000.0, 0.5
+
+[state 9002, removeexplod]
+type = removeexplod
+trigger1 = numexplod(9002) && var(2) = 0
+id = 9002
+
+[state 9002, bc减少]
+type = varadd
+trigger1 = var(2) > 0
+var(2) = -1
+
+[state 9002, abc减少]
+type = varadd
+trigger1 = var(3) > 0
+var(3) = -1
+
+[state 9002, bcd减少]
+type = varadd
+trigger1 = var(4) > 0
+var(4) = -1
+
+[state 9002, clear-var(5)]
+type = varset
+trigger1 = var(5) > 0
+trigger1 = time > 0
+var(5) = 0
+
+[state 9002, destroyself]
+type = destroyself
+trigger1 = var(2) <= 0
+trigger1 = var(3) <= 0
+trigger1 = var(4) <= 0

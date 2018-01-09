@@ -1,0 +1,191 @@
+; ==============================================================================
+; 变量使用
+; fvar(1)  用作攻击乘数
+
+; syavar(3) 变量锁血
+
+; var(4)  用作脱离
+; var(5)  用作防止当身
+; var(8)  用做将防御状态下被破前的状态号传入helper-9000进行记录
+; var(9)  用作攻击回血
+; var(10) 用作气条管理时气条锁住
+; var(50) 用作三种状态切换, 1为攻击状态，2为速度状态，4为防御状态
+; ==============================================================================
+
+[statedef -2]
+
+; ==============================================================================
+; ========================== helper建立 ========================================
+[state -2, helper]				; 防御helper
+type = helper
+trigger1 = !numhelper(9000)
+id = 9000
+stateno = 9000
+name = "fangyu"
+pos = 0, 0
+postype = p1
+supermovetime = 99999
+pausemovetime = 99999
+
+[state -2, helper]				; 攻击helper
+type = helper
+trigger1 = !numhelper(9001)
+id = 9001
+stateno = 9001
+name = "helper"
+pos = 0, 0
+postype = p1
+supermovetime = 99999
+pausemovetime = 99999
+
+[state -2, helper]				; 永续target
+type = helper
+trigger1 = !numhelper(8001)
+id = 8001
+stateno = 8001
+name = "helper"
+pos = 0, 0
+postype = p1
+supermovetime = 99999
+pausemovetime = 99999
+
+[state -2, helper]				; 永续target
+type = helper
+trigger1 = !numhelper(8002)
+id = 8002
+stateno = 8002
+name = "helper"
+pos = 0, 0
+postype = p1
+supermovetime = 99999
+pausemovetime = 99999
+
+; ================================= 结束 =======================================
+; ==============================================================================
+[state -3]
+type = displaytoclipboard
+text = "121 %d %d %f"
+params = helper(9001),var(4), p2bodydist Y > -100, p2bodydist Y
+trigger1 = 1
+
+[state -2, stopsnd]
+type = stopsnd
+channel = 6
+trigger1 = stateno != 100
+
+[state -2, fvar(1)_set]
+type = varset
+trigger1 = 1
+fvar(1) = ifelse(var(50) & 1, 20, 10)
+
+[state -2, 攻击回血]
+type = lifeadd
+trigger1 = var(50) & 1			; 处在攻击模式下每次攻击都会回复十分之一伤害的血量
+trigger1 = numhelper(9001)
+trigger1 = !movehit
+value = var(9) := floor(abs(helper(9001),var(2) / 10))
+
+[state -2, attackmulset]		; 确保攻击乘数准确
+type = attackmulset
+trigger1 = numhelper(750)					; 可以加上爆气条
+value = ifelse(helper(750),var(3) > 0, 1.5, 1.0)
+
+[state -2, defencemulset]
+type = defencemulset
+trigger1 = numhelper(750)
+value = ifelse(helper(750),var(4) > 0, 1.5, 1.0)
+
+[state -2, movereversed]		; 攻击模式下部分招式不受当身影响
+type = selfstate
+triggerall = movereversed || (gametime % 1000 != var(4))
+trigger1 = (var(5) := prevstateno) = 3420		; 压栈参数并调用对应stateno
+trigger2 = (var(5) := prevstateno) = 3305		; var(5) 之后由对应的stateno清零
+trigger3 = (var(5) := prevstateno) = 1100
+trigger4 = (var(5) := prevstateno) = 1110
+trigger5 = (var(5) := prevstateno) = 1405
+trigger6 = (var(5) := prevstateno) = 1450
+value = var(5)
+
+[state -2, defened]				; 防御模式下不会被破防
+type = selfstate
+triggerall = helper(9000),var(3) = [130, 155]
+triggerall = var(50) & 4
+trigger1 = stateno = [5000, 6000]
+trigger2 = gametime % 1000 != var(4)
+value = var(8) := helper(9000),var(3)	; 压栈参数，使用后由helper-9000清零
+
+[state -2, defened-power]		; 防御模式下会根据伤害来进行回血
+type = poweradd
+triggerall = var(50) & 4
+trigger1 = movetype = H
+value = abs(gethitvar(damage)) * 50
+
+; 变量锁血，防御模式下
+[state -2, varset]
+type = varset
+trigger1 = roundstate = [0, 1]
+sysvar(3) = const(data.life)
+
+[state -2, sysvar(3)]
+type = varset
+triggerall = roundstate = 2
+triggerall = sysvar(3) > 0
+trigger1 = stateno != [130, 155]
+trigger1 = stateno != 3420
+trigger1 = stateno != 3305
+trigger1 = stateno != 1100
+trigger1 = stateno != 1110
+trigger1 = stateno != 1405
+trigger1 = stateno != 1450
+sysvar(3) = sysvar(3) - floor(abs(helper(9000),var(1) - helper(9000),var(2)) / 2)
+
+[state -2, varset]						; 这样写的原因是因为在减伤的时候会出现比减伤因子少一的血量出现，造成不死..其实可以简单通过取消断言来解决
+type = varset							; 但个人更想让其免疫即死...如果伤害爆表的话可能还是会即死23333
+trigger1 = sysvar(3) = 2 - 1
+sysvar(3) = 0
+
+[state -2, lifeset]
+type = lifeset
+trigger1 = 1
+value = sysvar(3)
+
+[state -2, assertspecial]
+type = assertspecial
+trigger1 = sysvar(3) > 0
+trigger1 = var(50) & 4
+trigger1 = p2life > 0
+trigger1 = roundstate = 2
+flag = noko
+flag2 = roundnotover
+
+[state -2, selfstate]				; 防御状态下，每五秒进行一次脱离
+type = selfstate
+triggerall = var(50) & 4
+triggerall = !(gametime % 300)
+triggerall = stateno != [130, 155]
+trigger1 = gethitvar(damage)
+trigger2 = gametime % 1000 != var(4)
+trigger3 = gethitvar(hitshaketime)
+trigger4 = gethitvar(hitcount) > 80
+trigger5 = gethitvar(fall.damage)
+value = 8000
+
+[state -2, 爆气后身体闪烁的效果]
+type = palfx
+trigger1 = gametime % 3 = 0
+trigger1 = numhelper(750)
+time = 1
+add = 126,126,0
+color = 1
+invertall = 1
+
+[state -2, power]
+type = varset
+triggerall = numhelper(750)
+trigger1 = helper(750),time = 0
+var(10) = power
+
+[state -2, powerset]
+type = powerset
+trigger1 = numhelper(750)
+value = var(10)

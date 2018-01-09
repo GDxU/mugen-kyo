@@ -1,0 +1,4516 @@
+; ==============================================================================
+; 特殊攻击
+; ==============================================================================
+
+[statedef 1000]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1000
+ctrl = 0
+facep2 = 1
+
+[state 1000, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1000, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 2
+value = anim
+elem = 6
+
+[state 1000, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1000, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s10, 20
+channel = 10
+
+[state 1000, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s12, 1
+
+[state 1000, explod]
+type = explod
+trigger1 = animelem = 5
+anim = 1005
+postype = p1
+pos = 0, 0
+sprpriority = 5
+ownpal = 1
+
+[state 1000, helper]
+type = helper
+trigger1 = animelem = 5, = 1
+stateno = 1020
+id = 1000
+name = "Proj"
+pos = 48, 0
+postype = p1
+helpertype = normal
+ownpal = 1
+
+[state 1000, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1000, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 7
+trigger1 = var(50) & 2
+value = 1
+
+[state 1000, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+[statedef 1010]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1010
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1010, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1010, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 2
+value = anim
+elem = 6
+
+[state 1010, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s10, 20
+channel = 10
+
+[state 1010, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s12, 1
+
+[state 1010, explod]
+type = explod
+trigger1 = animelem = 5
+anim = 1005
+postype = p1
+pos = 0, 0
+sprpriority = 5
+ownpal = 1
+
+[state 1010, helper]
+type = helper
+trigger1 = animelem = 5, = 1
+stateno = 1020
+id = 1000
+name = "Proj"
+pos = 48, 0
+postype = p1
+helpertype = normal
+ownpal = 1
+
+[state 1010, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1010, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; helper
+; 其实是helper承载了一个project
+[statedef 1020]
+type = S
+movetype = I
+physics = N
+ctrl = 0
+anim = 1020
+sprpriority = 5
+
+[state 1020, 无敌]
+type = nothitby
+trigger1 = 1
+value = SCA
+
+[state 1020, 无阴影]
+type = assertspecial
+trigger1 = 1
+flag = noshadow
+
+[state 1020, velset]
+type = velset
+trigger1 = time = 0
+trigger1 = root,stateno = [1000, 1010]
+x = ifelse(root,stateno = 1000, 4, 7)
+
+[state 1020, project]
+type = projectile
+trigger1 = time = 0
+trigger1 = root,numprojID(1000) = 0
+trigger2 = root,numprojID(1000) = 1
+attr = S, SP
+projID = 1000
+projanim = 1021
+projhitanim = -1
+projscale = 1, 1
+projremove = 1
+projremovetime = 1
+velocity = vel X, vel Y
+projhits = 1
+projmisstime = 1
+projpriority = 1
+offset = 0, 0
+postype = p1
+damage = floor(15 * root,fvar(1)), floor(1 * root,fvar(1))
+getpower = floor(12 * root,fvar(1)), floor(12 * root,fvar(1))
+givepower = floor(1 * root,fvar(1)), floor(1 * root,fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 0, 13
+guard.pausetime = 0, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = 20, -45
+hitsound = s13, 0
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+airguard.velocity = -4,-1
+air.type = High
+air.velocity = -4,-7.5
+air.hittime = 12
+yaccel = .5
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+palfx.time = 30
+palfx.add = 30,-40,-140
+palfx.sinadd = 60,60,50,10
+palfx.color = 0
+palfx.invertall = 1
+
+[state 1020 , destroyself]
+type = destroyself
+trigger1 = time >= 300
+trigger2 = frontedgedist <= -80
+
+[state 1020, changestate]
+type = changestate
+trigger1 = time > 0
+trigger1 = root,numprojID(1000) = 0
+value = 1025
+
+; ==============================================================================
+; 消减
+[statedef 1025]
+type = S
+movetype = I
+physics = N
+velset = 0, 0
+anim = 9999
+
+[state 1025, 无敌]
+type = nothitby
+trigger1 = 1
+value = SCA
+
+[state 1025, 特殊]
+type = assertspecial
+trigger1 = 1
+flag = noshadow
+
+[state 1025, explod]
+type = explod
+trigger1 = time = 0
+anim = 1025
+postype = p1
+pos = 0, 0
+persistent = 0
+sprpriority = 5
+ownpal = 1
+
+[state 1025, destroyself]
+type = destroyself
+trigger1 = time = 2
+
+; ==============================================================================
+; 轻鬼烧
+[statedef 1100]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 12
+velset = 0, 0
+anim = 1100
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1100, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 1
+value = anim
+elem = 3
+
+[state 1100, changeanim]								; 用作防止当身
+type = changeanim
+trigger1 = time = 0
+value = 1100
+elem = ifelse(var(5) = 1100, helper(9001),var(3) + (var(5) := 0), 1)
+
+[state , nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(6) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1100, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s10, 21
+channel = 10
+
+[state 1100, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s12, 2
+
+[state 1100, explod]
+type = explod
+trigger1 = animelem = 4
+anim = 1120
+ID = 1100
+postype = p1
+pos = 0, 0
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1100, explod]
+type = explod
+trigger1 = animelem = 9, = 1
+anim = 1121
+id = 1100
+postype = p1
+pos = 0, 0
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1100, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3
+x = 8
+
+[state 1100, statetypeset]
+type = statetypeset
+trigger1 = animelem = 4
+statetype = A
+
+[state 1100, velset]
+type = velset
+trigger1 = animelem = 4
+x = 5
+y = -6
+
+[state 1100, velmul]
+type = velmul
+trigger1 = animelemtime(4) > 0
+x = 0.85
+
+[state 1100, veladd]
+type = veladd
+trigger1 = animelemtime(4) > 0
+y = 0.42
+
+[state 1100, hitdef]
+type = hitdef
+trigger1 = animelemtime(3) >= 0 && animelemtime(4) < 0
+trigger1 = !movecontact
+attr = A, SA
+damage = floor(17 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -10, -40
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -12
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = 0, -12
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 30
+nochainID = ifelse(var(50) & 1, 0, 30)
+
+[state 1100, movehitreset]
+type = movehitreset
+trigger1 = animelem = 4
+
+[state 1100, hitdef]
+type = hitdef
+trigger1 = animelemtime(4) >= 0 && animelemtime(7) < 0
+trigger1 = !movecontact
+attr = A, SA
+damage = floor(17 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -10, -110
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = 0
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -12
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 30
+
+[state 1100, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1100, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1100, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 1105
+
+; ==============================================================================
+; 落地
+[statedef 1105]
+type = S
+movetype = I
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1105
+ctrl = 0
+sprpriority = 2
+
+[state 1105, playsnd]
+type = playsnd
+trigger1 = time = 0
+value = s4, 0
+
+[state 1105, posset]
+type = posset
+trigger1 = time = 0
+y = 0
+
+[state 1105, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 重鬼烧
+[statedef 1110]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 12
+velset = 0, 0
+anim = 1110
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1110, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 1
+value = anim
+elem = 3
+
+[state 1110, changeanim]								; 用作防止当身
+type = changeanim
+trigger1 = time = 0
+value = 1110
+elem = ifelse(var(5) = 1110, helper(9001),var(3) + (var(5) := 0), 1)
+
+[state , nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1110, 无敌]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 && animelemtime(4) < 0
+value = SCA
+
+[state 1110, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s10, 21
+channel = 10
+
+[state 1110, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s12, 2
+
+[state 1110, explod]
+type = explod
+trigger1 = animelem = 4
+anim = 1120
+ID = 1110
+postype = p1
+pos = 0, 0
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1110, explod]
+type = explod
+trigger1 = animelem = 9, = 1
+anim = 1121
+id = 1110
+postype = p1
+pos = 0, 0
+removeongethit = 1
+
+sprpriority = 5
+ownpal = 1
+
+[state 1110, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3
+x = 8
+
+[state 1110, statetypeset]
+type = statetypeset
+trigger1 = animelem = 4
+statetype = A
+
+[state 1110, velset]
+type = velset
+trigger1 = animelem = 4
+x = 5
+y = -8
+
+[state 1110, velmul]
+type = velmul
+trigger1 = animelemtime(4) > 0
+x = 0.85
+
+[state 1110, veladd]
+type = veladd
+trigger1 = animelemtime(4) > 0
+y = 0.42
+
+[state 1110, hitdef]
+type = hitdef
+trigger1 = animelemtime(3) >= 0 && animelemtime(4) < 0
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(17 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -10, -40
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = 0
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 30
+nochainID = ifelse(var(50) & 1, 0, 30)
+
+[state 1110, movehitreset]
+type = movehitreset
+trigger1 = animelem = 4
+
+[state 1110, hitdef]
+type = hitdef
+trigger1 = animelemtime(4) >= 0 && animelemtime(7) < 0
+trigger1 = !movecontact
+attr = A, SA
+damage = floor(17 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -10, -110
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -12
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -12
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 30
+
+[state 1110, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1110, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1110, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 1115
+
+; ==============================================================================
+; 落地
+[statedef 1115]
+type = S
+movetype = I
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1115
+ctrl = 0
+sprpriority = 2
+
+[state 1115, playsnd]
+type = playsnd
+trigger1 = time = 0
+value = s4, 0
+
+[state 1115, poset]
+type = posset
+trigger1 = time = 0
+y = 0
+
+[state 1115, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 弱七五式
+[statedef 1200]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1200
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1200, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 2
+value = anim
+elem = 4
+
+[state 1200, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 2
+value = anim
+elem = 5
+
+[state 1200, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 2
+value = anim
+elem = 6
+
+[state 1200, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1200, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 22
+channel = 10
+
+[state 1200, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s0, 3
+channel = 4
+
+[state 1200, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3 || animelem = 5
+x = 5
+
+[state 1200, velset]
+type = velset
+trigger1 = animelem = 6
+x = 2.5
+y = -4
+
+[state 1200, veladd]
+type = veladd
+trigger1 = animelemtime(6) >= 0
+y = .4
+
+[state 1200, statetypeset]
+type = statetypeset
+trigger1 = animelem = 6
+statetype = A
+physics = N
+
+[state 1200, hitdef]
+type = hitdef
+trigger1 = !movecontact
+trigger1 = animelemtime(6) >= 0 && animelemtime(8) < 0
+attr = A, SA
+damage = floor(11 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = Hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+airguard.velocity = -4, -1
+air.type = high
+air.velocity = -4, -7.5
+air.hittime = 12
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+id = 40
+nochainID = ifelse(var(50) & 1, 0, 40)
+
+[state 1200, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1200, changestate]
+type = changestate
+trigger1 = command = "a"
+trigger1 = animelemtime(7) > 0
+value = 1201
+
+[state 1200, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1105
+
+; ==============================================================================
+; 弱七五式 二段目
+[statedef 1201]
+type = A
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+anim = 1201
+ctrl = 0
+sprpriority = 5
+
+[state 1201, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1201, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 23
+channel = 10
+
+[state 1201, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s0, 3
+
+[state 1201, veladd]
+type = veladd
+trigger1 = animelemtime(1) >= 0
+y = 0.4
+
+[state 1201, hitdef]
+type = hitdef
+trigger1 = !movecontact
+trigger1 = animelemtime(3) >= 0 && animelemtime(6) < 0
+attr = A, SA
+damage = floor(11 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -7
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -7
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+id = 60
+nochainID = ifelse(var(50) & 1, 0, 60)
+
+[state 1201, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1201, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1105
+
+; ==============================================================================
+; 强七五式
+[statedef 1210]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1210
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1210, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1210, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 1
+value = anim
+elem = 5
+
+[state 1210, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 3
+value = anim
+elem = 6
+
+[state , nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1210, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 22
+channel = 10
+
+[state 1210, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s0, 3
+channel = 4
+
+[state 1210, posadd]
+type = posadd
+trigger1 = animelem = 2
+x = 5
+
+[state 1210, velset]
+type = velset
+trigger1 = animelem = 3
+x = 1
+
+[state 1210, velset]
+type = velset
+trigger1 = animelem = 6
+x = 3
+y = -4
+
+[state 1210, veladd]
+type = veladd
+trigger1 = animelemtime(6) >= 0
+y = .4
+
+[state 1210, statetypeset]
+type = statetypeset
+trigger1 = animelem = 6
+statetype = A
+physics = N
+
+[state 1210, hitdef]
+type = hitdef
+trigger1 = !movecontact
+trigger1 = animelemtime(6) >= 0 && animelemtime(8) < 0
+attr = A, SA
+damage = floor(11 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = Hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+airguard.velocity = -4, -1
+air.type = high
+air.velocity = -4, -7.5
+air.hittime = 12
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+id = 40
+nochainID = ifelse(var(50) & 1, 0, 40)
+
+[state 1210, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1210, changestate]
+type = changestate
+trigger1 = command = "b"
+trigger1 = animelemtime(7) > 0
+value = 1211
+
+[state 1210, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1115
+
+; ==============================================================================
+; 强七五式 二段目
+[statedef 1211]
+type = A
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+anim = 1201
+ctrl = 0
+sprpriority = 5
+
+[state 1211, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1211, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 23
+channel = 10
+
+[state 1211, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s0, 3
+
+[state 1211, veladd]
+type = veladd
+trigger1 = animelemtime(1) >= 0
+y = 0.4
+
+[state 1211, hitdef]
+type = hitdef
+trigger1 = !movecontact
+trigger1 = animelemtime(3) >= 0 && animelemtime(6) < 0
+attr = A, SA
+damage = floor(11 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -12
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -12
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+id = 60
+nochainID = ifelse(var(50) & 1, 0, 60)
+
+[state 1211, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1211, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1115
+
+; ==============================================================================
+[statedef 1300]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1300
+ctrl = 0
+facep2 = 1
+
+[state 1300, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1300, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 24
+channel = 10
+
+[state 1300, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1300, reversalDef]
+type = ReversalDef
+trigger1 = animelem = 2
+reversal.attr = C, NA
+numhits = 0
+sparkxy = 25, 0
+sparkno = s6011
+pausetime = 11, 11
+hitsound = s2, 1
+p1stateno = 1320
+
+[state 1300, reversalDef]
+type = ReversalDef
+trigger1 = animelem = 4
+reversal.attr = S, NA
+numhits = 0
+sparkxy = 25, 0
+sparkno = s6011
+pausetime = 11, 11
+hitsound = s2, 1
+p1stateno = 1325
+
+[state 1300, hitdef]
+type = hitdef
+trigger1 = animelem = 5
+attr = S, SA
+damage = floor(13 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+hitflag = MAF
+guardflag = M
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -20, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -6
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -6
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -8
+id = 30
+
+[state 1300, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1300, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+[statedef 1310]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1310
+ctrl = 0
+facep2 = 1
+
+[state 1310, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = animelemtime(7) < 0
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1310, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 24
+channel = 10
+
+[state 1310, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1310, reversalDef]
+type = ReversalDef
+trigger1 = animelem = 2
+reversal.attr = C, NA
+numhits = 0
+sparkxy = 25, 0
+sparkno = s6011
+pausetime = 11, 11
+hitsound = s2, 1
+p1stateno = 1320
+
+[state 1310, reversalDef]
+type = ReversalDef
+trigger1 = animelem = 4
+reversal.attr = S, NA
+numhits = 0
+sparkxy = 25, 0
+sparkno = s6011
+pausetime = 11, 11
+hitsound = s2, 1
+p1stateno = 1325
+
+[state 1310, hitdef]
+type = hitdef
+trigger1 = animelem = 5
+attr = S, SA
+damage = floor(13 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+hitflag = MAF
+guardflag = M
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -20, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -6
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -6
+airguard.velocity = -4, -1
+yaccel = 0.55
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -8
+id = 70
+
+[state 1310, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1310, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 1300 1310当身成功后的状态号-1
+[statedef 1320]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 2
+velset = 0, 0
+anim = 1320
+ctrl = 0
+sprpriority = 5
+
+[state 1320, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 1, = 1
+value = anim
+elem = 2
+
+[state 1320, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 1
+value = anim
+elem = 3
+
+[state 1320, 无敌]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 && animelemtime(5) < 0
+value = SCA
+
+[state 1320, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1320, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+attr = S, SA
+damage = floor(16 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -40
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 30
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+p2stateno = 5610
+
+[state 1320, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1320, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1320, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 1300 1310当身成功后的状态号-2
+[statedef 1325]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 2
+velset = 0, 0
+anim = 1325
+ctrl = 0
+sprpriority = 5
+
+[state 1325, 无敌]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 && animelemtime(5) < 0
+value = SCA
+
+[state 1325, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1325, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3 || animelem = 4
+x = 8
+
+[state 1325, posadd]
+type = posadd
+trigger1 = animelem = 5
+x = 2
+
+[state 132, posadd]
+type = posadd
+trigger1 = animelem = 6
+x = 6
+
+[state 1325, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+attr = S, SA
+damage = floor(16 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(8 * fvar(1)), floor(8 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 30
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+p2stateno = 5610
+
+[state 1325, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1325, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1325, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 轻 琴月阳
+[statedef 1400]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 14
+velset = 0, 0
+anim = 1400
+ctrl = 0
+facep2 = 1
+
+[state 1400, changeanim]
+type = changeanim
+trigger1 = var(50) & 2
+trigger1 = anim != 1402
+value = 1402
+
+[state 1400, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1400, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 25
+channel = 10
+
+[state 1400, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s5, 0
+channel = 8
+
+[state 1400, velset]
+type = velset
+trigger1 = animelem = 2
+x = ifelse(var(50) & 2, 11, 8.5)
+
+[state 1400, changestate]
+type = changestate
+trigger1 = animelemtime(2) >= 0
+trigger1 = p2bodydist X <= 64
+value = 1405
+
+[state 1400, changestate]
+type = changestate
+trigger1 = time = 22
+value = 1401
+
+; ==============================================================================
+; 重琴月阳
+[statedef 1410]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 14
+velset = 0, 0
+anim = 1400
+ctrl = 0
+facep2 = 1
+
+[state 1410, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1410, changeanim]
+type = changeanim
+trigger1 = var(50) & 2
+trigger1 = anim != 1402
+value = 1402
+
+[state 1410, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 25
+channel = 10
+
+[state 1410, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s5, 0
+channel = 8
+
+[state 1410, velset]
+type = velset
+trigger1 = animelem = 2
+x = ifelse(var(50) & 2, 11, 8.5)
+
+[state 1410, changestate]
+type = changestate
+trigger1 = animelemtime(2) >= 0
+trigger1 = p2bodydist X <= 64
+value = 1405
+
+[state 1410, changestate]
+type = changestate
+trigger1 = time = 30
+value = 1401
+
+; ==============================================================================
+; 琴月阳结束
+[statedef 1401]
+type = S
+movetype = I
+physics = N
+juggle = 0
+poweradd = 0
+anim = 1401
+ctrl = 0
+
+[state 1401, stopsnd] ; 把跑步声停掉
+type = stopsnd
+trigger1 = time = 0
+channel = 8
+
+[state 1401, velmul] ; 平滑的降低速度，防止猛然停下....
+type = velmul
+trigger1 = 1
+x = 0.65
+
+[state 1401, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 琴月阳第一段
+[statedef 1405]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+ctrl = 0
+anim = 1405
+sprpriority = 5
+
+[state 1405, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 1, = 2
+value = anim
+elem = 2
+
+[state 1405, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1405, changeanim]								; 用作防止当身
+type = changeanim
+trigger1 = time = 0
+value = 1405
+elem = ifelse(var(5) = 1405, helper(9001),var(3) + (var(5) := 0), 1)	; 顺便清零
+
+[state 1405, stopsnd]
+type = stopsnd
+trigger1 = time = 0
+channel = 8
+
+[state 1405, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s0, 1
+
+[state 1405, velmul]
+type = velmul
+trigger1 = animelem = 3, < 0
+x = 0.97
+
+[state 1405, velmul]
+type = velmul
+trigger1 = animelem = 3, >= 0
+x = 0.8
+
+[state 1405, velset]
+type = velset
+trigger1 = animelem = 6
+x = 0
+
+[state 1405, hitdef]
+type = hitdef
+trigger1 = animelem = 3
+attr = S, SA
+damage = floor(10 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 8, 10
+guard.pausetime = 8, 8
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -20, -60
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -10
+air.type = high
+air.hittime = 12
+air.velocity = -4.5, -6.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+id = 60
+
+[state 1405, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1405, changestate]
+type = changestate
+trigger1 = movecontact
+value = 1406
+
+[state 1405, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 琴月阳第二段
+[statedef 1406]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+ctrl = 0
+velset = 0, 0
+anim = 1406
+sprpriority = 5
+
+[state 1406, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 1
+value = anim
+elem = 4
+
+[state 1406, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 2
+value = anim
+elem = 5
+
+[state 1406, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 1
+value = anim
+elem = 6
+
+[state 1406, width]
+type = width
+trigger1 = 1
+edge = 50, 0
+
+[state 1406, posadd]
+type = posadd
+trigger1 = animelem = 8 || animelem = 9
+x = 8
+
+[state 1406, hitdef]
+type = hitdef
+trigger1 = animelem = 6
+attr = S, ST
+damage = 0
+getpower = 0
+givepower = 0
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 0, 0
+sparkno = s6021
+guard.sparkno = s6012
+sparkxy = -20, -60
+hitsound = s1, 6
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4.5, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+p1stateno = 1407
+p2stateno = 1420
+p1facing = 1
+p2facing = 1
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+id = 60
+
+[state 1406, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1406, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 琴月阳 爆炸
+[statedef 1407]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 0
+ctrl = 0
+velset = 0, 0
+anim = 1407
+sprpriority = 5
+
+[state 1407, attackDist]
+type = attackDist
+trigger1 = 1
+value = 0
+
+[state 1407, 无敌]
+type = nothitby
+trigger1 = 1
+value = SCA
+
+[state 1407, width]
+type = width
+trigger1 = 1
+edge = 50, 0
+player = 25, 0
+
+[state 1407, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s10, 26
+channel = 10
+
+[state 1407, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s13, 1
+
+[state 1407, explod]
+type = explod
+trigger1 = animelem = 3
+anim = 6105
+postype = p1
+pos = 72, -110
+sprpriority = 10
+ownpal = 1
+
+[state 1407, posadd]
+type = posadd
+trigger1 = animelem = 4 || animelem = 5
+x = 8
+
+[state 1407, targetbind]
+type = targetbind
+trigger1 = animelemtime(1) >= 0 && animelemtime(2) <= 0
+pos = 75, -87
+
+[state 1407, targetbind]
+type = targetbind
+trigger1 = animelemtime(2) >= 0 && animelemtime(3) <= 0
+pos = 72, -110
+
+[state 1407, envshake]
+type = envshake
+trigger1 = animelem = 3
+ampl = 10
+freq = 100
+time = 20
+
+[state 1407, targetlifeadd]
+type = targetlifeadd
+trigger1 = animelem = 3
+value = floor(-20 * fvar(1))
+kill = 1
+
+[state 1407, targetlifeadd]				; 如果是EX琴月阳的话，则增加10*fvar(1)的伤害
+type = targetlifeadd
+trigger1 = animelem = 3
+trigger1 = prevstateno = 1450
+value = floor(-10 * fvar(1))
+kill = 1
+
+[state 1407, targetpoweradd]
+type = poweradd
+trigger1 = animelem = 3
+value = 6
+
+[state 1407, targetstate]
+type = targetstate
+trigger1 = animelem = 3, = 1
+value = 1421
+
+[state 1407, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 3, = 30
+trigger1 = var(50) & 2
+value = 1
+
+[state 1407, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 琴月阳 p2侧
+[statedef 1420]
+type = A
+movetype = H
+physics = N
+velset = 0, 0
+
+[state 1420, 1]
+type = changeanim2
+trigger1 = time = 0
+value = 1420
+
+[state 1420, 2]
+type = nothitby
+trigger1 = 1
+value = SCA
+
+[state 1420, 3]
+type = screenbound
+trigger1 = 1
+value = 0
+
+[state 1420, 4]
+type = selfstate
+trigger1 = time = 300
+value = 5050
+
+; ==============================================================================
+; 琴月阳 p2侧
+[statedef 1421]
+type = A
+movetype = H
+physics = N
+velset = 0, 0
+
+[state 1421, 1]
+type = changeanim
+trigger1 = time = 0
+value = 5030
+
+[state 1421, 2]
+type = changeanim
+trigger1 = time = 6
+value = 5050
+
+[state 1421, 3]
+type = changeanim
+trigger1 = anim = 5050
+trigger1 = vel Y >= 1
+trigger1 = selfanimexist(anim + 10)
+value = anim + 10
+
+[state 1421, 4]
+type = nothitby
+trigger1 = !(var(50) & 2)
+value = SCA
+
+[state 1421, 5]
+type = posadd
+trigger1 = time = 0
+y = 40
+
+[state 1421, 6]
+type = velset
+trigger1 = time = 1
+x = -2
+y = -10
+
+[state 1421, 7]
+type = veladd
+trigger1 = time >= 1
+y = 0.5
+
+[state 1421, 8]
+type = palfx
+trigger1 = time = 0
+time = 60
+add = 30, -40, -140
+sinadd = 60, 60, 50, 10
+color = 0
+invertall = 1
+
+[state 1421, 4]
+type = selfstate
+trigger1 = vel Y > 0 && pos Y >= 20
+value = 5100
+
+; ==============================================================================
+; EX琴月阳
+[statedef 1450]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = -1000
+velset = 0, 0
+ctrl = 0
+anim = 1630
+sprpriority = 3
+
+[state 1450, speed]
+type = changeanim
+trigger1 = time = 0
+value = anim
+elem = ifelse(var(5) = 1405, helper(9001),var(3) + (var(5) := 0), 4)
+
+[state 1450, nothitby]
+type = nothitby
+trigger1 = 1
+value = SCA, AA, AT, AP
+
+[state 1450, playsnd]
+type = playsnd
+trigger1 = time = 4
+value = s0, 1
+
+[state 1450, width]
+type = width
+trigger1 = 1
+edge = 50, 0
+
+[state 1450, posadd]
+type = posadd
+trigger1 = animelem = 4 || animelem = 6
+x = 16
+
+[state 1450, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+trigger2 = animelem = 5
+attr = S, ST
+damage = 0
+getpower = 0
+givepower = 0
+animtype = hard
+air.animtype = back
+guardflag =					; 不可防
+hitflag = MAFD
+priority = 4, hit
+pausetime = 0, 0
+sparkno = s6021
+guard.sparkno = s6012
+sparkxy = -25, -60
+hitsound = s1, 16
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4.5, -7
+guard.velocity = -10.5
+air.type = high
+air.hittime = 12
+air.velocity = -4.5, -7
+airguard.velocity = -4, -1
+yaccel = 0.5
+fall = 1
+fall.recover = 0
+p1stateno = 1407
+p2stateno = 1420
+p1facing = 1
+p2facing = 1
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+
+[state 1450, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1450, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 9
+trigger1 = var(50) & 2
+value = 1
+
+[state 1450, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 轻胧车
+[statedef 1500]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1500
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1500, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1500, 无敌]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 && animelemtime(3) < 0
+value = SCA
+
+[state 1500, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1500, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s3, 1
+
+[state 1500, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s10, 27
+channel = 10
+
+[state 1500, statetypeset]
+type = statetypeset
+trigger1 = animelem = 3
+statetype = A
+physics = N
+
+[state 1500, velset]
+type = velset
+trigger1 = animelem = 3
+x = 5
+y = -6
+
+[state 1500, veladd]
+type = veladd
+trigger1 = animelemtime(3) >= 0
+y = ifelse(animelemtime(7) >= 0, 0.6, 0.35)
+
+[state 1500, velmul]
+type = velmul
+trigger1 = animelemtime(5) >= 0
+x = 0.92
+
+[state 1500, hitdef]
+type = hitdef
+trigger1 = animelemtime(4) >= 0 && animelemtime(5) < 0
+trigger1 = !movecontact
+attr = A, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = MA
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -10.5
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4.5, -10.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall = 1
+fall.recover = 0
+fall.recovertime = 600
+id = 60
+
+[state 1500, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1500, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 1105
+
+; ==============================================================================
+; 重胧车
+[statedef 1510]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1510
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1510, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 3
+value = anim
+elem = 3
+
+[state 1510, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 2
+value = anim
+elem = 4
+
+[state 1510, 无敌]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 && animelemtime(4) < 0
+value = SCA
+
+[state 1510, playsnd]
+type = playsnd
+trigger1 = animelem = 3 || animelem = 7 || animelem = 15
+value = s0, 4
+
+[state 1510, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s3, 1
+
+[state 1510, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s10, 28
+channel = 10
+
+[state 1510, playsnd]
+type = playsnd
+trigger1 = animelem = 7
+value = s10, 29
+channel = 10
+
+[state 1510, playsnd]
+type = playsnd
+trigger1 = animelem = 15
+value = s10, 30
+channel = 10
+
+[state 1510, statetypeset]
+type = statetypeset
+trigger1 = animelem = 3
+statetype = A
+physics = N
+
+[state 1510, velset]
+type = velset
+trigger1 = animelem = 3
+x = 6
+y = -4
+
+[state 1510, veladd]
+type = veladd
+trigger1 = animelemtime(3) >= 0
+y = ifelse(animelemtime(15) >= 0, 0.28, 0.09)
+
+[state 1510, velmul]
+type = velmul
+trigger1 = animelemtime(9) >= 0
+x = 0.92
+
+[state 1510, velset]
+type = velset
+trigger1 = animelem = 16
+y = 0
+
+[state 1510, movehitreset]
+type = movehitreset
+trigger1 = animelem = 4 || animelem = 8 || animelem = 16
+
+[state 1510, hitdef]
+type = hitdef
+triggerall = !movecontact
+trigger1 = animelemtime(4) >= 0 && animelemtime(5) < 0
+trigger2 = animelemtime(8) >= 0 && animelemtime(9) < 0
+attr = A, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = MA
+hitflag = MAF
+priority = 4, hit
+pausetime = 8, 10
+guard.pausetime = 8, 8
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+fall.recovertime = 600
+id = 60
+
+[state 1510, hitdef]
+type = hitdef
+triggerall = !movecontact
+trigger1 = animelemtime(16) >= 0 && animelemtime(17) < 0
+attr = A, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = MA
+hitflag = MAF
+priority = 4, hit
+pausetime = 8, 10
+guard.pausetime = 8, 8
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+fall.recovertime = 600
+p2stateno = 5610
+id = 60
+
+[state 1510, movetype]
+type = statetypeset
+trigger1 = animelem = 17
+movetype = I
+
+[state 1510, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 1105
+
+; ==============================================================================
+; 荒咬
+; 变量使用
+; var(1)
+[statedef 1600]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1600
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1600, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 1
+value = anim
+elem = 4
+
+[state 1600, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 1
+value = anim
+elem = 5
+
+[state 1600, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3 || animelem = 4
+x = 8
+
+[state 1600, playsnd]
+type = playsnd
+trigger1 = animelem = 7
+value = s0, 4
+
+[state 1600, playsnd]
+type = playsnd
+trigger1 = animelem = 1
+value = s10, 31
+channel = 10
+
+[state 1600, playsnd]
+type = playsnd
+trigger1 = animelem = 17
+value = s10, 32
+channel = 10
+
+[state 1600, explod]
+type = explod
+trigger1 = animelem = 10
+anim = 1601
+postype = p1
+pos = 96, -68
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1600, reversaldef]
+type = reversaldef
+trigger1 = animelemtime(5) >= 0 && animelemtime(6) < 0
+reversal.attr = SCA, AA, AP
+numhits = 0
+pausetime = 11 , 13
+sparkno = s6012
+hitsound = s2, 1
+
+[state 1600, hitdef]
+type = hitdef
+trigger1 = animelem = 10
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAFP
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.52
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 35
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+
+[state 1600, movetype]
+type = statetypeset
+trigger1 = animelem = 13
+movetype = I
+
+[state 1600, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1600, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1600, varset]
+type = varset
+trigger1 = animelemtime(4) > 0 && animelemtime(16) < 0
+trigger1 = !var(59)
+trigger1 = command = "236A" || command = "236C"
+var(1) = 1
+
+[state 1600, varset]
+type = varset
+trigger1 = animelemtime(4) > 0 && animelemtime(16) < 0
+trigger1 = !var(59)
+trigger1 = command = "63214A" || command = "63214C"
+var(1) = 2
+
+[state 1600, varset]
+type = varset
+trigger1 = animelemtime(4) > 0 && animelemtime(16) < 0
+trigger1 = !var(59)
+trigger1 = command = "63214B" || command = "63214D"
+var(1) = 3
+
+[state 1600, changestate]
+type = changestate
+trigger1 = animelemtime(13) >= 3 && animelemtime(16) < 0
+trigger1 = var(1) = 1
+value = 1605
+
+[state 1600, changestate]
+type = changestate
+trigger1 = animelemtime(14) >= 3 && animelemtime(16) < 0
+trigger1 = var(1) = 2
+value = 1620
+
+[state 1600, changestate]
+type = changestate
+trigger1 = animelemtime(13) >= 3 && animelemtime(16) < 0
+trigger1 = var(1) = 3
+value = 1640
+
+[state 1600, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 16
+trigger1 = var(50) & 2
+value = 1
+
+[state 1600, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 九伤
+; 变量使用var(1)
+[statedef 1605]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1605
+ctrl = 0
+sprpriority = 3
+
+[state 1605, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 1, = 2
+value = anim
+elem = 2
+
+[state 1605, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 33
+channel = 10
+
+[state 1605, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1605, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3 || animelem = 4 || animelem = 5 || animelem = 6 || animelem = 7 || animelem = 8 || animelem = 10 || animelem = 11
+x = 8
+
+[state 1605, explod]
+type = explod
+trigger1 = animelem = 5
+anim = 1606
+postype = P1
+pos = 72, -80
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1605, hitdef]
+type = hitdef
+trigger1 = animelem = 5
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4, -7.5
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 1605, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1605, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1605, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1605, varset]
+type = varset
+trigger1 = animelemtime(5) >= 0 && animelemtime(7) < 13
+trigger1 = !var(59)
+trigger1 = command = "x" || command = "y"
+var(1) = 1
+
+[state 1605, varset]
+type = varset
+trigger1 = animelemtime(5) >= 0 && animelemtime(7) < 13
+trigger1 = !var(59)
+trigger1 = command = "a" || command = "b"
+var(1) = 2
+
+[state 1605, varset]
+type = varset
+trigger1 = animelemtime(5) >= 0 && animelemtime(7) < 13
+trigger1 = !var(59)
+trigger1 = command = "63214B" || command = "63214D"
+var(1) = 3
+
+[state 1605, changestate]
+type = changestate
+trigger1 = animelemtime(7) >= 4 && animelemtime(7) <= 12
+trigger1 = var(1) = 1
+value = 1610
+
+[state 1605, changestate]
+type = changestate
+trigger1 = animelemtime(7) >= 4 && animelemtime(7) <= 12
+trigger1 = var(1) = 2
+value = 1615
+
+[state 1605, changestate]
+type = changestate
+trigger1 = animelemtime(7) >= 4 && animelemtime(7) <= 12
+trigger1 = var(1) = 3
+value = 1640
+
+[state 1605, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 8
+trigger1 = var(50) & 2
+value = 1
+
+[state 1605, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 八锖
+[statedef 1610]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1610
+ctrl = 0
+sprpriority = 3
+
+[state 1610, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 1
+value = anim
+elem = 3
+
+[state 1610, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3 || animelem = 4
+x = 8
+
+[state 1610, posadd]
+type = posadd
+trigger1 = animelem = 5
+x = 2
+
+[state 1610, playsnd]
+type = playsnd
+trigger1 = animelem = 5
+value = s0, 4
+
+[state 1610, explod]
+type = explod
+trigger1 = animelem = 6
+anim = 1326
+postype = p1
+pos = 72, -64
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1610, hitdef]
+type = hitdef
+trigger1 = animelem = 5
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.52
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 50
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+p2stateno = 5610
+id = 60
+
+[state 1610, movetype]
+type = statetypeset
+trigger1 = animelem = 7
+movetype = I
+
+[state 1610, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1610, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 七濑
+[statedef 1615]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1615
+ctrl = 0
+sprpriority = 3
+
+[state 1615, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 3
+value = anim
+elem = 3
+
+[state 1615, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3 || animelem = 4 || animelem = 5
+x = 20
+
+[state 1615, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s0, 4
+
+[state 1615, hitdef]
+type = hitdef
+trigger1 = animelem = 5
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = diagup
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -75
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -6, -9
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -6, -9
+airguard.velocity = -4, -1
+yaccel = 0.5
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -11
+id = 60
+
+[state 1615, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1615, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 7
+trigger1 = var(50) & 2
+value = 1
+
+[state 1615, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 七濑
+[statedef 1616]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1616
+ctrl = 0
+sprpriority = 3
+
+[state 1616, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 1
+value = anim
+elem = 3
+
+[state 1616, posadd]
+type = posadd
+trigger1 = animelem = 3
+x = 10
+
+[state 1616, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s0, 4
+
+[state 1616, hitdef]
+type = hitdef
+trigger1 = animelem = 7
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = diagup
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -75
+hitsound = s1, 3
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -6, -9
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -6, -9
+airguard.velocity = -4, -1
+yaccel = 0.5
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -11
+id = 60
+
+[state 1616, movetype]
+type = statetypeset
+trigger1 = animelem = 8
+movetype = I
+
+[state 1616, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 12
+trigger1 = var(50) & 2
+value = 1
+
+[state 1616, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 八锖
+; var(1)
+[statedef 1620]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1620
+ctrl = 0
+sprpriority = 3
+
+[state 1620, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 1
+value = anim
+elem = 5
+
+[state 1620, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 3
+value = anim
+elem = 6
+
+[state 1620, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3 || animelem = 4 || animelem = 5 || animelem = 6 || animelem = 7
+x = 8
+
+[state 1620, posadd]
+type = posadd
+trigger1 = animelem = 8
+x = 2
+
+[state 1620, playsnd]
+type = playsnd
+trigger1 = animelem = 7
+value = s10, 24
+channel = 10
+
+[state 1620, playsnd]
+type = playsnd
+trigger1 = animelem = 8
+value = s0, 4
+
+[state 1620, explod]
+type = explod
+trigger1 = animelem = 9
+anim = 1326
+postype = P1
+pos = 72, -64
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1620, hitdef]
+type = hitdef
+trigger1 = animelem = 9
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = HA
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 21
+ground.hittime = 21
+ground.velocity = -4, 15
+air.type = high
+air.hittime = 12
+air.velocity = -4, 15
+airguard.velocity = -4, -1
+yaccel = 0.35
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 50
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+p2stateno = 5610
+id = 60
+
+[state 1620, movetype]
+type = statetypeset
+trigger1 = animelem = 10
+movetype = I
+
+[state 1620, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1620, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1620, varset]
+type = varset
+trigger1 = animelemtime(6) > 0
+trigger1 = !var(59)
+trigger1 = command = "x" || command = "y"
+var(1) = 1
+
+[state 1620, varset]
+type = varset
+trigger1 = animelemtime(6) > 0
+trigger1 = !var(59)
+trigger1 = command = "a"
+var(1) = 2
+
+[state 1620, varset]
+type = varset
+trigger1 = animelemtime(6) > 0
+trigger1 = !var(59)
+trigger1 = command = "b"
+var(1) = 3
+
+[state 1620, changestate]
+type = changestate
+trigger1 = animelemtime(10) >= 4 && animelemtime(11) < 0
+trigger1 = var(1) = 1
+value = 1625
+
+[state 1620, changestate]
+type = changestate
+trigger1 = animelemtime(10) >= 4 && animelemtime(11) < 0
+trigger1 = var(1) = 2
+value = 1630
+
+[state 1620, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 砌穿
+[statedef 1625]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 1625
+ctrl = 0
+sprpriority = 3
+
+[state 1625, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 1, = 5
+value = anim
+elem = 2
+
+[state 1625, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s0, 4
+
+[state 1625, explod]
+type = explod
+trigger1 = animelem = 4
+anim = 1326
+postype = p1
+pos = 88, -24
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1625, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = L
+hitflag = MAFD
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -40
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -12
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+p2stateno = 5610
+id = 60
+
+[state 1625, movetype]
+type = statetypeset
+trigger1 = animelem = 10
+movetype = I
+
+[state 1625, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1625, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 荒咬琴月阳
+[statedef 1630]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+ctrl = 0
+anim = 1630
+sprpriority = 3
+
+[state 1630, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1630, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 3
+value = anim
+elem = 4
+
+[state 1630, playsnd]
+type = playsnd
+trigger1 = time = 4
+value = s0, 1
+
+[state 1630, width]
+type = width
+trigger1 = 1
+edge = 50, 0
+
+[state 1630, posadd]
+type = posadd
+trigger1 = animelem = 4 || animelem = 6
+x = 16
+
+[state 1630, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+attr = S, ST
+damage = 0
+getpower = 0
+givepower = 0
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAFD
+priority = 4, hit
+pausetime = 0, 0
+sparkno = s6021
+guard.sparkno = s6012
+sparkxy = -25, -60
+hitsound = s1, 16
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -4.5, -7
+guard.velocity = -10.5
+air.type = high
+air.hittime = 12
+air.velocity = -4.5, -7
+airguard.velocity = -4, -1
+yaccel = 0.5
+fall = 1
+fall.recover = 0
+p1stateno = 1407
+p2stateno = 1420
+p1facing = 1
+p2facing = 1
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+
+[state 1630, movetype]
+type = statetypeset
+trigger1 = animelem = 6
+movetype = I
+
+[state 1630, speed]		; 速度模式下收招加快
+type = ctrlset
+trigger1 = animelem = 9
+trigger1 = var(50) & 2
+value = 1
+
+[state 1630, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 轻轢鉄
+[statedef 2100]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 2100
+ctrl = 0
+sprpriority = 3
+
+[state 2100, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 5
+value = anim
+elem = 4
+
+[state 2100, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s3, 1
+
+[state 2100, velset]
+type = velset
+trigger1 = animelem = 2
+x = 5
+y = -2.5
+
+[state 2100, playerpush]
+type = playerpush
+trigger1 = 1
+value = 1
+
+[state 2100, veladd]
+type = veladd
+trigger1 = animelemtime(2) > 0
+trigger1 = vel Y < 0
+y = 0.45
+
+[state 2100, statetypeset]
+type = statetypeset
+trigger1 = animelem = 2
+statetype = A
+
+[state 2100, statetypeset]
+type = statetypeset
+trigger1 = animelem = 3
+statetype = S
+
+[state 2100, velset]
+type = velset
+trigger1 = animelem = 4, = 0
+x = 8
+y = 0
+
+[state 2100, velset]
+type = velset
+trigger1 = animelem = 11, = 0
+x = 0
+y = 0
+
+[state 2100, posset]
+type = posset
+trigger1 = animelem = 4, = 0
+y = 0
+
+[state 2100, playsnd]
+type = playsnd
+trigger1 = animelem = 9
+value = s0, 4
+
+[state 2100, explod]
+type = explod
+trigger1 = animelem = 10
+anim = 1606
+postype = p1
+pos = 41, -85
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 2100, hitdef]
+type = hitdef
+trigger1 = animelem = 10
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MA
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s13, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -12
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -12
+airguard.velocity = -4, -1
+yaccel = 0.55
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+envshake.time = 12
+envshake.freq = 90
+envshake.ampl = -3
+envshake.phase = -2
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 2100, movetype]
+type = statetypeset
+trigger1 = animelem = 11
+movetype = I
+
+[state 2100, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 重轢鉄
+[statedef 2110]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 4
+velset = 0, 0
+anim = 2110
+ctrl = 0
+sprpriority = 3
+
+[state 2110, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 2110, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 2
+value = anim
+elem = 4
+
+[state 2110, nothitby]
+type = nothitby
+trigger1 = animelemtime(1) >= 0 & animelemtime(2) < 0
+value = SCA
+
+[state 2110, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s10, 32
+channel = 10
+
+[state 2110, playsnd]
+type = playsnd
+trigger1 = animelem = 6
+value = s0, 4
+
+[state 2110, explod]
+type = explod
+trigger1 = animelem = 6
+anim = 1606
+postype = p1
+pos = 52, -75
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 2110, posadd]
+type = posadd
+trigger1 = animelem = 1
+x = 8
+
+[state 2110, hitdef]
+type = hitdef
+trigger1 = animelemtime(6) >= 0 && animelemtime(7) < 0
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s13, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8, -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.55
+air.fall = 1
+fall = 1
+fall.recover = 0
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+envshake.time = 12
+envshake.freq = 90
+envshake.ampl = -3
+envshake.phase = -2
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 2110, hitdef]
+type = hitdef
+trigger1 = animelemtime(8) >= 0 && animelemtime(9) < 0
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -70
+hitsound = s13, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.55
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+envshake.time = 12
+envshake.freq = 90
+envshake.ampl = -3
+envshake.phase = -2
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 2110, movetype]
+type = statetypeset
+trigger1 = animelem = 9
+movetype = I
+
+[state 2110, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 毒咬
+[statedef 1700]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1700
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1700, speed]
+type = changeanim
+trigger1 = var(50) & 2
+trigger1 = anim != 1701
+value = 1701
+
+[state 1700, playsnd]
+type = playsnd
+trigger1 = animelem = 8
+value = s10, 20
+channel = 10
+
+[state 1700, playsnd]
+type = playsnd
+trigger1 = animelem = 8
+value = s0, 4
+
+[state 1700, posadd]
+type = posadd
+trigger1 = animelem = 2 || animelem = 3 || animelem = 4 || animelem = 5 || animelem = 6 || animelem = 7 || animelem = 13 || animelem = 14 || animelem = 15 || animelem = 16 || animelem = 17
+x = 8
+ 
+[state 1700, posadd]
+type = posadd
+trigger1 = animelem = 8 || animelem = 9
+x = 16
+ 
+[state 1700, explod]
+type = explod
+trigger1 = animelem = 10
+anim = 1601
+postype = p1
+pos = 96, -76
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1700, reversaldef]
+type = reversaldef
+trigger1 = animelemtime(5) >= 0 && animelemtime(6) < 0
+reversal.attr = SCA, AA, AP
+numhits = 0
+pausetime = 11, 11
+sparkno = s6012
+hitsound = s2, 1
+
+[state 1700, hitdef]
+type = hitdef
+trigger1 = animelem = 10
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAFP
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -65
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = low
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.55
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+palfx.time = 35
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 1700, movetype]
+type = statetypeset
+trigger1 = animelem = 12
+movetype = I
+
+[state 1700, playsnd]
+type = playsnd
+trigger1 = movehit = 1
+value = s13, 0
+
+[state 1700, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1700, varset]
+type = varset
+trigger1 = animelemtime(13) < 0
+trigger1 = command = "63214A" || command = "63214C"
+var(1) = 1
+
+[state 1700, changestate]
+type = changestate
+trigger1 = animelemtime(11) >= 1 && animelemtime(13) < 0
+trigger1 = var(1) = 1
+value = 1710
+
+[state 1700, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 罪咏
+[statedef 1710]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1710
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1710, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3 || animelem = 4 || animelem = 8 || animelem = 9 || animelem = 10 || animelem = 11
+x = 8
+
+[state 1710, posadd]
+type = posadd
+trigger1 = animelem = 7
+x = 24
+
+[state 1710, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s0, 4
+
+[state 1710, explod]
+type = explod
+trigger1 = animelem = 4
+anim = 1606
+postype = p1
+pos = 84, -80
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1710, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = hard
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -65
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+palfx.time = 35
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 1710, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1710, playsnd]
+type = playsnd
+trigger1 = movehit
+value = s13, 0
+
+[state 1710, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1710, varset]
+type = varset
+trigger1 = animelemtime(6) < 0
+trigger1 = !var(59)
+trigger1 = command = "holdfwd"
+trigger1 = command = "x" || command = "y"
+var(1) = 1
+
+[state 1710, changestate]
+type = changestate
+trigger1 = animelemtime(5) >= 1 && animelemtime(6) < 0
+trigger1 = var(1) = 1
+value = 1720
+
+[state 1710, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 罚詠
+[statedef 1720]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 6
+velset = 0, 0
+anim = 1720
+ctrl = 0
+sprpriority = 3
+facep2 = 1
+
+[state 1720, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3
+x = 8
+
+[state 1720, playsnd]
+type = playsnd
+trigger1 = animelem = 4
+value = s0, 4
+
+[state 1720, statetypeset]
+type = statetypeset
+trigger1 = animelem = 4
+statetype = A
+
+[state 1720, velset]
+type = velset
+trigger1 = animelem = 4
+x = 4
+y = -6
+
+[state 1720, velset]
+type = velset
+trigger1 = animelem = 6, = 8
+x = 0
+
+[state 1720, velmul]
+type = velmul
+trigger1 = animelemtime(4) > 0
+x = 0.94
+
+[state 1720, veladd]
+type = veladd
+trigger1 = animelemtime(4) > 0
+y = 0.4
+
+[state 1720, hitdef]
+type = hitdef
+trigger1 = animelem = 4
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -75
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -12
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -12
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 1720, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1720, playsnd]
+type = playsnd
+trigger1 = movehit
+value = s13, 0
+
+[state 1720, varset]
+type = varset
+trigger1 = time = 0
+var(1) = 0
+
+[state 1720, varset]
+type = varset
+trigger1 = animelemtime(4) >= 0
+trigger1 = !var(59)
+trigger1 = command = "623A" || command = "623C"
+var(1) = 1
+
+[state 1720, changestate]
+type = changestate
+trigger1 = animelemtime(6) >= 1 && animelemtime(6) < 8
+trigger1 = var(1) = 1
+value = 1730
+
+[state 1710, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1721
+
+; ==============================================================================
+; 落地
+[statedef 1721]
+type = S
+movetype = I
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1721
+ctrl = 0
+sprpriority = 2
+
+[state 1721, playsnd]
+type = playsnd
+trigger1 = time = 0
+value = s4, 0
+
+[state 1721, posset]
+type = posset
+trigger1 = time = 0
+y = 0
+
+[state 1721, posadd]
+type = posadd
+trigger1 = animelem = 1 || animelem = 2 || animelem = 3 || animelem = 4 || animelem = 5
+x = 8
+
+[state 1721, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 毒咬连段中的鬼烧
+[statedef 1730]
+type = A
+movetype = A
+physics = N
+juggle = 0
+poweradd = 2
+anim = 1730
+ctrl = 0
+sprpriority = 5
+
+[state 1730, posadd]
+type = posadd
+trigger1 = animelem = 2
+x = 36
+
+[state 1730, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 21
+channel = 10
+
+[state 1730, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s12, 2
+
+[state 1730, velset]
+type = velset
+trigger1 = animelem = 1
+x = 2.5
+
+[state 1730, velset]
+type = velset
+trigger1 = animelem = 5
+x = 0
+
+[state 1730, velmul]
+type = velmul
+trigger1 = animelemtime(1) > 0
+x = 0.94
+
+[state 1730, veladd]
+type = veladd
+trigger1 = animelemtime(1) >= 0
+y = 0.4
+
+[state 1730, explod]
+type = explod
+trigger1 = animelem = 2
+anim = 1120
+id = 1730
+postype = p1
+pos = 0, 0
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1730, explod]
+type = explod
+trigger1 = animelem = 7, = 1
+anim = 1121
+id = 1730
+postype = p1
+pos = 0, 0
+removeongethit = 1
+sprpriority = 5
+ownpal = 1
+
+[state 1730, hitdef]
+type = hitdef
+trigger1 = animelem = 1
+trigger1 = !movecontact
+attr = S, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+air.animtype = back
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -60
+hitsound = s1, 1
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -2, -9
+guard.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -2, -9
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = ifelse(var(50) & 1, 0, 1)
+fall.recovertime = 600
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+palfx.time = 60
+palfx.add = 30, -40, -140
+palfx.sinadd = 60, 60, 50, 10
+palfx.color = 0
+palfx.invertall = 1
+id = 60
+
+[state 1730, movetype]
+type = statetypeset
+trigger1 = animelem = 5
+movetype = I
+
+[state 1730, playsnd]
+type = playsnd
+trigger1 = movehit
+value = s13, 0
+
+[state 1730, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1115
+
+; ==============================================================================
+; 弱R.E.D.kick
+; fvar(1) 变量使用
+[statedef 1800]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 10
+velset = 0, 0
+anim = 1800
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1800, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1800, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 6, = 3
+value = anim
+elem = 7
+
+[state 1800, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1800, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 35
+channel = 10
+
+[state 1800, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s12, 4
+
+[state 1800, posadd]
+type = posadd
+trigger1 = animelem = 3
+y = -16
+
+[state 1800, statetypeset]
+type = statetypeset
+trigger1 = animelem = 3
+statetype = A
+
+[state 1800, varset]
+type = null
+trigger1 = animelemtime(1) = 1 && fvar(1) := 0
+trigger2 = animelemtime(3) = 1 && fvar(1) := 3.5
+trigger3 = animelemtime(5) = 1 && fvar(1) := 11.5
+trigger4 = animelemtime(5) = 2 && fvar(1) := 3.5
+trigger5 = animelemtime(6) = 1 && fvar(1) := 11.5
+trigger6 = animelemtime(6) = 2 && fvar(1) := 3.5
+trigger7 = animelemtime(7) = 1 && fvar(1) := 11.5
+trigger8 = animelemtime(7) = 2 && fvar(1) := 3.5
+trigger9 = animelemtime(8) = 1 && fvar(1) := 5.5
+trigger10 = animelemtime(8) = 2 && fvar(1) := 3.5
+
+[state 1800, velset]
+type = velset
+trigger1 = animelemtime(3) >= 0
+x = fvar(1)
+
+[state 1800, velset]
+type = velset
+trigger1 = animelem = 3
+y = -5.5
+
+[state 1800, veladd]
+type = veladd
+trigger1 = animelemtime(3) > 0
+y = 0.625
+
+[state 1800, hitdef]
+type = hitdef
+trigger1 = animelem = 7
+attr = A, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -75
+hitsound = s1, 4
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+p2stateno = 5610
+id = 60
+
+[state 1800, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1801
+
+; ==============================================================================
+; 落地
+[statedef 1801]
+type = S
+movetype = I
+physics = N
+juggle = 0
+poweradd = 0
+velset = 0, 0
+anim = 1801
+ctrl = 0
+sprpriority = 2
+
+[state 1801, playsnd]
+type = playsnd
+trigger1 = time = 0
+value = s4, 0
+
+[state 1801, posset]
+type = posset
+trigger1 = time = 0
+y = 0
+
+[state 1801, changestate]
+type = changestate
+trigger1 = animtime = 0
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 强R.E.D.kick
+; fvar(1) 变量使用
+[statedef 1810]
+type = S
+movetype = A
+physics = N
+juggle = 0
+poweradd = 10
+velset = 0, 0
+anim = 1810
+ctrl = 0
+sprpriority = 5
+facep2 = 1
+
+[state 1810, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 2, = 2
+value = anim
+elem = 3
+
+[state 1810, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 3, = 3
+value = anim
+elem = 4
+
+[state 1810, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 4, = 2
+value = anim
+elem = 5
+
+[state 1810, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 5, = 2
+value = anim
+elem = 6
+
+[state 1810, speed]
+type = changeanim
+triggerall = var(50) & 2			; 速度模式下出招加快
+trigger1 = animelem = 6, = 2
+value = anim
+elem = 7
+
+[state 1810, nothitby]				; 攻击状态下的无敌
+type = nothitby
+trigger1 = var(50) & 1
+value = SCA, AA, AT, AP
+
+[state 1810, playsnd]
+type = playsnd
+trigger1 = animelem = 2
+value = s10, 35
+channel = 10
+
+[state 1810, playsnd]
+type = playsnd
+trigger1 = animelem = 3
+value = s12, 4
+
+[state 1810, posadd]
+type = posadd
+trigger1 = animelem = 3
+y = -16
+
+[state 1810, statetypeset]
+type = statetypeset
+trigger1 = animelem = 3
+statetype = A
+
+[state 1810, varset]
+type = null
+trigger1 = animelemtime(1) = 1 && fvar(1) := 0
+trigger2 = animelemtime(3) = 1 && fvar(1) := 4.3125
+trigger3 = animelemtime(5) = 1 && fvar(1) := 12.3125
+trigger4 = animelemtime(5) = 2 && fvar(1) := 4.3125
+trigger5 = animelemtime(6) = 1 && fvar(1) := 12.3125
+trigger6 = animelemtime(6) = 2 && fvar(1) := 4.3125
+trigger7 = animelemtime(7) = 1 && fvar(1) := 12.3125
+trigger8 = animelemtime(7) = 2 && fvar(1) := 4.3125
+trigger9 = animelemtime(8) = 1 && fvar(1) := 6.3125
+trigger10 = animelemtime(8) = 2 && fvar(1) := 4.3125
+
+[state 1810, velset]
+type = velset
+trigger1 = animelemtime(3) >= 0
+x = fvar(1)
+
+[state 1810, velset]
+type = velset
+trigger1 = animelem = 3
+y = -8.5
+
+[state 1810, veladd]
+type = veladd
+trigger1 = animelemtime(3) > 0
+y = 0.625
+
+[state 1810, hitdef]
+type = hitdef
+trigger1 = animelem = 7
+attr = A, SA
+damage = floor(18 * fvar(1)), floor(1 * fvar(1))
+getpower = floor(6 * fvar(1)), floor(6 * fvar(1))
+givepower = floor(1 * fvar(1)), floor(1 * fvar(1))
+animtype = up
+guardflag = M
+hitflag = MAF
+priority = 4, hit
+pausetime = 11, 13
+guard.pausetime = 11, 11
+sparkno = s6002
+guard.sparkno = s6012
+sparkxy = -25, -75
+hitsound = s1, 4
+guardsound = s2, 1
+ground.type = high
+ground.slidetime = 17
+ground.hittime = 17
+ground.velocity = -8
+air.type = high
+air.hittime = 12
+air.velocity = -4, -7.5
+airguard.velocity = -4, -1
+yaccel = 0.5
+air.fall = 1
+fall.recover = 0
+ground.cornerpush.veloff = -12
+air.cornerpush.veloff = 0
+guard.cornerpush.veloff = -10
+p2stateno = 5610
+id = 60
+
+[state 1810, changestate]
+type = changestate
+trigger1 = vel Y > 0 && pos Y >= 0
+value = 1801

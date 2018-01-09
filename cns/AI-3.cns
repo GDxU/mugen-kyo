@@ -1,0 +1,726 @@
+[statedef -3]
+
+[state -3]
+type = varset
+trigger1 = 1
+var(50) = var(50) | 7
+
+[state -3, AI_ON_Helper]
+type = helper
+id = 30000
+stateno = 30000
+name = "ai_on_helper"
+keyctrl = 1
+pos = 999999, 999999
+trigger1 = !numhelper(30000)
+trigger1 = !var(59)
+trigger1 = roundstate = [0, 1]
+
+[state -3, AI_ON]
+type = varset
+var(59) = 1
+triggerall = !var(59)
+trigger1 = numhelper(30000)
+trigger1 = helper(30000),var(59) = 1
+trigger2 = 1
+
+[state -3, varset]			; 用于脱离检测
+type = varset
+trigger1 = 1
+var(4) = gametime % 1000
+
+[state -3, AI_OFF]
+type = varset
+var(59) = 0
+triggerall = var(59)
+trigger1 = roundstate = [3, 4]
+
+[state -3, 无式]
+type = changestate
+value = 3200
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = p2bodydist x = [0, 80]
+triggerall = power >= 1000
+trigger1 = !enemynear(var(58)),ctrl
+trigger1 = enemynear(var(58)),animtime > -5
+trigger2 = enemynear(var(58)),hitdefattr = SC, NA, SA, NT, ST, NP, SP
+
+[state -3, 前进]
+type = changestate
+value = 21
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = p2bodydist X > 70
+trigger1 = p2movetype != A
+trigger2 = inguarddist
+
+[state -3, 蹲a蹲b]
+type = changestate
+value = ifelse(random % 2, 400, 430)
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = p2bodydist X < 45
+triggerall = p2statetype != A
+trigger1 = p2movetype != A
+
+[state -3, 站cd]
+type = changestate
+value = 250
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = movetype != H
+trigger1 = 0
+
+[state -3, cd反]
+type = null;changestate
+value = 255
+triggerall = var(59)
+triggerall = statetype != A
+triggerall = power >= 1000
+triggerall = stateno = [130, 155]
+trigger1 = p2bodydist X < 60
+trigger1 = p2bodydist Y > -70
+trigger1 = !enemynear(var(58)),ctrl
+trigger1 = enemynear(var(58)),hitdefattr = SCA, NA, SA, NP, SP
+
+[state -3, 空中cd]
+type = changestate
+value = 650
+triggerall = var(59) && ctrl
+triggerall = statetype = A	; 加上|| 1 防止除零错误
+trigger1 = 0
+;trigger1 = floor(p2bodydist X / (vel X + enemynear(var(58)),vel X) || 1) = [21, 32] 
+;trigger1 = floor(p2bodydist Y / (vel X + enemynear(var(58)),vel X) || 1),vel Y)) = [21, 32]
+
+[state -3, 前翻滚]
+type = changestate
+value = 700
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = movetype != H
+triggerall = enemynear(var(58)),frontedgebodydist > 30
+trigger1 = p2movetype = A
+trigger1 = enemynear(var(58)),hitdefattr = SCA, SA
+trigger1 = !enemynear(var(58)),ctrl
+trigger1 = p2bodydist X < 60
+trigger2 = p2movetype != A
+trigger2 = enemynear(var(58)),numproj > 0
+trigger2 = inguarddist
+trigger2 = !enemynear(var(58)),ctrl || p2bodydist X > 80
+trigger3 = var(50) & 4
+trigger3 = inguarddist
+
+[state -3, 后翻滚]
+type = changestate
+value = 710
+triggerall = var(59) && ctrl
+triggerall = statetype != A
+triggerall = movetype != H
+triggerall = backedgebodydist > 60
+trigger1 = p2movetype = A
+trigger1 = enemynear(var(58)),hitdefattr = SCA, SA
+trigger1 = !enemynear(var(58)),ctrl
+trigger2 = var(50) & 4
+trigger2 = inguarddist
+
+[state -3, 蹲防]
+type = changestate
+value = 131
+triggerall = var(59) && ctrl
+triggerall = p2statetype != A
+triggerall = helper(9000),var(6) != p2stateno
+triggerall = helper(9000),var(7) != p2stateno
+trigger1 = inguarddist
+trigger1 = p2statetype = C
+trigger2 = enemynear(var(58)),hitdefattr = SC, AA, AT, AP
+trigger3 = p2movetype = A
+trigger3 = p2statetype = C
+trigger4 = helper(9000),var(4) = p2stateno
+trigger5 = helper(9000),var(5) = p2stateno
+
+[state -3, 站防]
+type = changestate
+value = 130
+triggerall = var(59) && ctrl
+triggerall = helper(9000),var(4) != p2stateno
+triggerall = helper(9000),var(5) != p2stateno
+trigger1 = inguarddist
+trigger1 = p2statetype != C
+trigger2 = enemynear(var(58)),hitdefattr = SA, AA, AT, AP
+trigger3 = p2movetype = A
+trigger3 = p2statetype != C
+trigger4 = helper(9000),var(6) = p2stateno
+trigger5 = helper(9000),var(7) = p2stateno
+
+; ==============================================================================
+; ------------------------------AI 用走动、跳跃、跑动状态号 ------------------------------------------
+; ==============================================================================
+; AI前进
+[statedef 21]
+type = S
+physics = S
+ctrl = 0
+
+[state 21, 1]
+type = turn
+trigger1 = p2dist X < 0
+
+[state 21, 2]
+type = velset
+trigger1 = 1
+x = const(velocity.walk.fwd.x)
+
+[state 21, 3]
+type = changeanim
+trigger1 = vel x > 0
+trigger1 = anim != 20
+value = 20
+
+[state 21, 4]
+type = changeanim
+trigger1 = vel x < 0
+trigger1 = anim != 21
+value = 21
+
+[state 21, 5]
+type = changestate
+triggerall = var(59)
+trigger1 = p2movetype = A
+trigger2 = inguarddist
+trigger3 = p2bodydist X <= 20
+trigger3 = p2statetype = S || p2statetype = C
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; AI后退
+[statedef 22]
+type = S
+physics = S
+ctrl = 0
+
+[state 22, 1]
+type = turn
+trigger1 = p2dist X < 0
+
+[state 22, 2]
+type = velset
+trigger1 = 1
+x = const(velocity.walk.back.x)
+
+[state 22, 3]
+type = changeanim
+trigger1 = vel x > 0
+trigger1 = anim != 20
+value = 20
+
+[state 22, 4]
+type = changeanim
+trigger1 = vel x < 0
+trigger1 = anim != 22
+value = 22
+
+[state 22, 5]
+type = changestate
+triggerall = var(59)
+trigger1 = p2movetype = A
+trigger2 = inguarddist
+trigger3 = backedgebodydist <= 20
+value = 0
+ctrl = 1
+
+; ==============================================================================
+; 前跳
+[statedef 30]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.fwd.x)
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = 1
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 50
+ctrl = 1
+
+; ==============================================================================
+; 后跳
+[statedef 31]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.back.x)
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = -1
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 50
+ctrl = 1
+
+; ==============================================================================
+; 前小跳
+[statedef 32]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.fwd.x)
+y = const(velocity.jump.y)
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 55
+ctrl = 0
+
+; ==============================================================================
+; 后小跳
+[statedef 33]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.back.x)
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = -1
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 55
+ctrl = 0
+
+; ==============================================================================
+; 前中跳
+[statedef 34]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.fwd.x) * 1.5
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = 2
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 55
+ctrl = 0
+
+; ==============================================================================
+; 后中跳
+[statedef 34]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.back.x) * 1.5
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = -2
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 55
+ctrl = 0
+
+; ==============================================================================
+; 前大跳
+[statedef 34]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.fwd.x) * 1.5
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = 2
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 50
+ctrl = 1
+
+; ==============================================================================
+; 后大跳
+[statedef 34]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.back.x) * 1.5
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = -2
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 50
+ctrl = 1
+
+; ==============================================================================
+; 垂直跳
+[statedef 38]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.neu.x)
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = 0
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 50
+ctrl = 1
+
+; ==============================================================================
+; 垂直小跳
+[statedef 39]
+type = S
+physics = S
+anim = 40
+ctrl = 0
+
+[state 40, 1]
+type = turn
+trigger1 = time = 0
+trigger1 = p2dist X < 0
+
+[state 40, 2]
+type = nothitby
+trigger1 = 1
+value = SCA, AT
+
+[state 40, 3]
+type = afterimage
+trigger1 = time = 0
+time = 1
+
+[state 40, 4]
+type = velset
+trigger1 = animtime = 0
+x = const(velocity.jump.neu.x)
+y = const(velocity.jump.y)
+
+[state 40, snd]	; 设置变量用作稍后状态的声音播放
+type = varset
+trigger1 = 1
+sysvar(1) = 0
+
+[state 40, 5]
+type = changestate
+trigger1 = animtime = 0
+value = 55
+ctrl = 0
+
+; ==============================================================================
+; 前跑
+[statedef 99]
+type = S
+physics = S
+anim = 100
+ctrl = 0
+
+[state 100, 1]
+type = velset
+trigger1 = animelemtime(2) >= 0
+x = const(velocity.run.fwd.x)
+
+[state 100, 2]
+type = assertspecial
+trigger1 = 1
+flag = nowalk
+flag2 = noautoturn
+
+[state 100, AI]
+type = changestate
+triggerall = var(59)
+triggerall = animelemtime(2) >= 0
+trigger1 = alive					; 这里需要写AI的退出条件
+trigger1 = life > 0
+trigger1 = roundstate = 3
+value = 101
+
+; 后急退可以直接使用stateno 105，那个与AI无关
+
+; ==============================================================================
+; 用helper快速启动AI
+[statedef 30000]
+anim = 0
+ctrl = 0
+
+[state 30000, !ishelper]
+type = selfstate
+trigger1 = !ishelper
+value = 0
+
+[state 30000, assertspecial]
+type = assertspecial
+trigger1 = 1
+flag = noshadow
+flag2 = invisible
+
+[state 30000, bindtoroot]			; 防止有时候断言错误导致helper显示出来
+type = bindtoroot
+trigger1 = 1
+time = -1
+pos = 9999999, 9999999
+
+[state 30000, command]				; 是人在操作
+type = varset
+trigger1 = command = "up" && root,command = "up"
+trigger2 = command = "down" && root,command = "down"
+trigger3 = command = "back" && root,command = "back"
+trigger4 = command = "fwd" && root,command = "fwd"
+trigger5 = command = "a" && root,command = "a"
+trigger6 = command = "b" && root,command = "b"
+trigger7 = command = "c" && root,command = "c"
+trigger8 = command = "x" && root,command = "x"
+trigger9 = command = "y" && root,command = "y"
+trigger10 = command = "z" && root,command = "z"
+trigger11 = command = "start" && root,command = "start"
+var(59) = -1
+
+[State 30000, destroyself]
+Type = DestroySelf
+triggerall = isHelper
+Trigger1 = root,var(59) || var(59) = -1
+trigger2 = command = "up" && root,command = "up"
+trigger3 = command = "down" && root,command = "down"
+trigger4 = command = "back" && root,command = "back"
+trigger5 = command = "fwd" && root,command = "fwd"
+trigger6 = command = "a" && root,command ="a"
+trigger7 = command = "b" && root,command ="b"
+trigger8 = command = "c" && root,command ="c"
+trigger9 = command = "x" && root,command = "x"
+trigger10 = command = "y" && root,command = "y"
+trigger11 = command = "z" && root,command = "z"
+trigger12 = command = "start" && root,command = "start"
+
+[state 30000, AI_ON]				; watch 模式下乱动
+type = varset
+trigger1 = root,command = "up"
+trigger2 = root,command = "down"
+trigger3 = root,command = "back"
+trigger4 = root,command = "fwd"
+trigger5 = root,command = "a"
+trigger6 = root,command = "b"
+trigger7 = root,command = "c"
+trigger8 = root,command = "x"
+trigger9 = root,command = "y"
+trigger10 = root,command = "z"
+trigger11 = root,command = "start"
+var(59) = 1
+

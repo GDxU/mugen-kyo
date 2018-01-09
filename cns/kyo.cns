@@ -1,0 +1,52 @@
+; ==============================================================================
+; 属性配置开始
+[data]
+life				= 1000
+power				= 5000
+attack           	= 25   
+defence          	= 100     
+fall.defence_up  	= 0      
+liedown.time     	= 50      
+airjuggle        	= 30      
+sparkno          	= 1       
+guard.sparkno    	= 40      
+KO.echo          	= 0       
+volume           	= 50      
+
+intpersistindex		= 59	; int变量可以保存到下一局
+floatpersistindex	= 39	; float变量可以保存到下一局
+
+[size]
+xscale				= 1
+yscale				= 1
+ground.front		= 15
+ground.back			= 16
+air.front			= 11
+air.back			= 12
+height				= 60
+attack.dist			= 230
+proj.attack.dist	= 100
+proj.doscale		= 0
+head.pos			= 0, -90
+mid.pos				= 0, -60
+shadowoffset		= 0
+draw.offset			= 0, 0
+
+[velocity]
+walk.fwd			= 3.0
+walk.back			= -3.0
+run.fwd				= 6.2, 0
+run.back			= -12, -4
+jump.neu			= 0, -10
+jump.fwd			= 3.5
+jump.back			= -3.5
+
+[movement]
+airjump.num			= 0
+airjump.height		= 35
+yaccel				= .61		; 0.61简写
+stand.friction		= .85
+crouch.friction		= .82
+
+; ==============================================================================
+; 属性配置结束
